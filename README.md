@@ -1,6 +1,6 @@
+<h1 align="center"> IsCopy/你抄了吗 </h1>
 <p align="center">
 	<img src=".github/pic/logo.png" alt="logo"/><br/>
-	<b style="font-size: 35px"> IsCopy/你抄了吗</b><br>
     <img src="https://img.shields.io/badge/python-3.6-blue.svg" alt="python"/>
     <img src="https://img.shields.io/github/last-commit/WhiteRobe/iscopy.svg" alt="last-commit"/>
     <a href="https://github.com/WhiteRobe/iscopy/blob/master/LICENSE">
@@ -20,7 +20,7 @@
 
 ## 快速上手 | Quick Start
 
-```python
+```shell
 python anly.py --input ./demo --filename demo-data.py
 ```
 
