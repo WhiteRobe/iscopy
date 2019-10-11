@@ -1,0 +1,5 @@
+component_depth: 1
+exclude:
+- /demo/.*
+languages:
+- python

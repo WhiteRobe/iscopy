@@ -6,6 +6,7 @@
     <a href="https://github.com/WhiteRobe/iscopy/blob/master/LICENSE">
     	<img src="https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000" alt="LICENSE"/>
     </a>
+    <img src='https://bettercodehub.com/edge/badge/WhiteRobe/iscopy?branch=master'>
 </p>
 
 > 这是一个开发中的代码重复度检查框架。
