@@ -1,6 +1,7 @@
 class BaseAnalyser:
     def __init__(self, args):
         self.args = args
+        self.template = open(self.args.template, encoding='utf-8').read() if self.args.template is not None else None
 
 
 class BatchAnalyser(BaseAnalyser):
@@ -14,8 +15,9 @@ class BatchAnalyser(BaseAnalyser):
         import os
         from ..extractor.base import BaseExtractor
         for _dir in os.listdir(self.args.input):
+            print('提取 -- %s -- 的特征...' % _dir)
             filepath = re.sub(r'/+', '/', self.args.input + '/' + _dir + '/' + self.args.filename)
-            inst = BaseExtractor(filepath)
+            inst = BaseExtractor(filepath, template=self.template)
             self.users[_dir] = inst.properties()
 
         user_names = list(self.users.keys())
@@ -26,7 +28,7 @@ class BatchAnalyser(BaseAnalyser):
             self.result[_]['max_match_radio'] = 0
 
         for i, user_name in enumerate(user_names):
-            print('提取 -- %s -- 的特征' % user_name)
+            print('分析 -- %s -- 的特征重复度:' % user_name)
             for j in range(i + 1, len(user_props)):
                 print('\t正在分析: -- %s -- VS. -- %s --' % (user_names[i], user_names[j]))
                 da = DualAnalyser(self.args, (user_names[i], user_props[i]), (user_names[j], user_props[j]))

@@ -3,6 +3,7 @@ def build_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--input')
     parser.add_argument('--filename')
+    parser.add_argument('--template', default=None)
     parser.add_argument('--summary', default=True)
     parser.add_argument('--output', default='./output')
     return parser.parse_args()

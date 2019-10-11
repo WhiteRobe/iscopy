@@ -14,7 +14,8 @@
 
 ## 依赖 | Dependency
 
-目前的依赖：
+我希望引入尽量少的依赖，目前的依赖：
+
 - pandas
 - pygments
 
@@ -27,5 +28,5 @@ python anly.py --input ./demo --filename demo-data.py
 ## 架构 | Struture
 
 - `analyser`：主要的分析器
-- `extractor`： 特征提取器
+- `extractor`：特征提取器
 - `purifier`：代码规格化

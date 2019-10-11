@@ -1,13 +1,20 @@
 class BaseExtractor:
-    def __init__(self, filepath, encoding='utf-8'):
+    def __init__(self, filepath, encoding='utf-8', template=None):
+        """
+        基础分析器
+        :param filepath: 要分析的文件路径
+        :param encoding: 编码方式
+        :param template: 模板文件
+        """
         import os
         self.code = open(filepath, "r", encoding=encoding).read()
         self.filename = os.path.split(filepath)[1]
+        self.template = template
 
     def properties(self):
         """
         基础分析器
-        :return: 返回一些比较基础的分析结果
+        :return: 返回一些比较基础的提取结果
         """
         import re
         import pygments.lexers
@@ -22,7 +29,7 @@ class BaseExtractor:
             # .... 其它非必须的量
         }
 
-        code = BasePurifier().prune(self.code)
+        code = BasePurifier().prune(self.code, self.template)
 
         lexer = pygments.lexers.guess_lexer_for_filename(self.filename, code)
         tokens = list(lexer.get_tokens(code))
