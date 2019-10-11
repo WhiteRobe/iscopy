@@ -11,27 +11,12 @@ class BatchAnalyser(BaseAnalyser):
         self.result = {}
 
     def analyse(self):
-        import re
-        import os
-        from ..extractor.base import BaseExtractor
-        for _dir in os.listdir(self.args.input):
-            print('提取 -- %s -- 的特征...' % _dir)
-            filepath = re.sub(r'/+', '/', self.args.input + '/' + _dir + '/' + self.args.filename)
-            if os.path.exists(filepath):
-                inst = BaseExtractor(filepath, template=self.template)
-                self.users[_dir] = inst.properties()
-            else:
-                print('\t 没有检测到文件')
-                self.result[_dir] = {'err': 'No file detect!'}
 
-        user_names = list(self.users.keys())
-        user_props = list(self.users.values())
+        self.extract()  # 提取特征
 
-        for _ in user_names:
-            self.result[_] = {}
-            self.result[_]['max_match_radio'] = 0
-            self.result[_]['max_same_line'] = 0
-            self.result[_]['total_line'] = self.users[_]['total_line']
+        user_names, user_props = list(self.users.keys()), list(self.users.values())
+
+        self.init_user(user_names)
 
         for i, user_name in enumerate(user_names):
             print('分析 -- %s -- 的特征重复度:' % user_name)
@@ -39,19 +24,10 @@ class BatchAnalyser(BaseAnalyser):
                 print('\t正在分析: -- %s -- VS. -- %s --' % (user_names[i], user_names[j]))
                 da = DualAnalyser(self.args, (user_names[i], user_props[i]), (user_names[j], user_props[j]))
                 match_radio, same_line = da.analyse()
-                print('\t\t常规匹配指数: %f' % match_radio)
-                print('\t\t宽松相同行数: %d' % same_line)
+                print('\t\t常规匹配指数: %f\n, \t\t宽松相同行数: %d' % (match_radio, same_line))
 
-                if match_radio > self.result[user_name]['max_match_radio']:
-                    self.result[user_name]['max_match_opponent'] = user_names[j]
-                    self.result[user_name]['max_match_radio'] = match_radio
-                    self.result[user_names[j]]['max_match_opponent'] = user_name
-                    self.result[user_names[j]]['max_match_radio'] = match_radio
-                if same_line > self.result[user_name]['max_same_line']:
-                    self.result[user_name]['max_same_line_opponent'] = user_names[j]
-                    self.result[user_name]['max_same_line'] = same_line
-                    self.result[user_names[j]]['max_same_line_opponent'] = user_name
-                    self.result[user_names[j]]['max_same_line'] = same_line
+                self.find_max_match(match_radio, user_name, user_names[j], 'max_match_radio', 'max_match_opponent')
+                self.find_max_match(same_line, user_name, user_names[j], 'max_same_line', 'max_same_line_opponent')
 
             # 相同行比例
             self.result[user_name]['same_line_radio'] = \
@@ -67,7 +43,35 @@ class BatchAnalyser(BaseAnalyser):
         import pandas as pd
         result = pd.DataFrame(self.result)
         result.T.to_csv(self.args.output+'/summary.csv', encoding='utf_8_sig')
+        print('\n------完成！结果输出到 %s------' % self.args.output+'/summary.csv')
 
+    def init_user(self, user_names):
+        for _ in user_names:
+            self.result[_] = {}
+            self.result[_]['max_match_radio'] = 0
+            self.result[_]['max_same_line'] = 0
+            self.result[_]['total_line'] = self.users[_]['total_line']
+
+    def extract(self):
+        import re
+        import os
+        from ..extractor.base import BaseExtractor
+        for _dir in os.listdir(self.args.input):
+            print('提取 -- %s -- 的特征...' % _dir)
+            filepath = re.sub(r'/+', '/', self.args.input + '/' + _dir + '/' + self.args.filename)
+            if os.path.exists(filepath):
+                inst = BaseExtractor(filepath, template=self.template)
+                self.users[_dir] = inst.properties()
+            else:
+                print('\t 没有检测到文件')
+                self.result[_dir] = {'err': 'No file detect!'}
+
+    def find_max_match(self, radio, user_name, opponent_name, value_key, opponent_key):
+        if radio > self.result[user_name][value_key]:
+            self.result[user_name][opponent_key] = opponent_name
+            self.result[user_name][value_key] = radio
+            self.result[opponent_name][opponent_key] = user_name
+            self.result[opponent_name][value_key] = radio
 
 class DualAnalyser(BaseAnalyser):
     def __init__(self, args, file1, file2):
