@@ -30,7 +30,6 @@ class BaseExtractor:
         }
 
         code = BasePurifier().prune(self.code, self.template)
-
         lexer = pygments.lexers.guess_lexer_for_filename(self.filename, code)
         tokens = list(lexer.get_tokens(code))
 

@@ -17,8 +17,12 @@ class BatchAnalyser(BaseAnalyser):
         for _dir in os.listdir(self.args.input):
             print('提取 -- %s -- 的特征...' % _dir)
             filepath = re.sub(r'/+', '/', self.args.input + '/' + _dir + '/' + self.args.filename)
-            inst = BaseExtractor(filepath, template=self.template)
-            self.users[_dir] = inst.properties()
+            if os.path.exists(filepath):
+                inst = BaseExtractor(filepath, template=self.template)
+                self.users[_dir] = inst.properties()
+            else:
+                print('\t 没有检测到文件')
+                self.result[_dir] = {'err': 'No file detect!'}
 
         user_names = list(self.users.keys())
         user_props = list(self.users.values())
@@ -26,20 +30,33 @@ class BatchAnalyser(BaseAnalyser):
         for _ in user_names:
             self.result[_] = {}
             self.result[_]['max_match_radio'] = 0
+            self.result[_]['max_same_line'] = 0
+            self.result[_]['total_line'] = self.users[_]['total_line']
 
         for i, user_name in enumerate(user_names):
             print('分析 -- %s -- 的特征重复度:' % user_name)
             for j in range(i + 1, len(user_props)):
                 print('\t正在分析: -- %s -- VS. -- %s --' % (user_names[i], user_names[j]))
                 da = DualAnalyser(self.args, (user_names[i], user_props[i]), (user_names[j], user_props[j]))
-                match_radio = da.analyse()
+                match_radio, same_line = da.analyse()
                 print('\t\t常规匹配指数: %f' % match_radio)
+                print('\t\t宽松相同行数: %d' % same_line)
 
                 if match_radio > self.result[user_name]['max_match_radio']:
                     self.result[user_name]['max_match_opponent'] = user_names[j]
                     self.result[user_name]['max_match_radio'] = match_radio
                     self.result[user_names[j]]['max_match_opponent'] = user_name
                     self.result[user_names[j]]['max_match_radio'] = match_radio
+                if same_line > self.result[user_name]['max_same_line']:
+                    self.result[user_name]['max_same_line_opponent'] = user_names[j]
+                    self.result[user_name]['max_same_line'] = same_line
+                    self.result[user_names[j]]['max_same_line_opponent'] = user_name
+                    self.result[user_names[j]]['max_same_line'] = same_line
+
+            # 相同行比例
+            self.result[user_name]['same_line_radio'] = \
+                self.result[user_name]['max_same_line'] / self.users[user_name]['total_line'] \
+                    if self.users[user_name]['total_line'] > 0 else 0
 
     def summary(self):
         print('\n分析完毕，输出总体结果：')
@@ -64,4 +81,9 @@ class DualAnalyser(BaseAnalyser):
 
     def analyse(self):
         from difflib import SequenceMatcher
-        return SequenceMatcher(None, self.file1props['code'], self.file2props['code']).quick_ratio()
+        op_codes = self.file2props['code'].split('\n')
+        same_line = 0
+        for c in self.file1props['code'].split('\n'):
+            if c in op_codes:
+                same_line += 1
+        return SequenceMatcher(None, self.file1props['code'], self.file2props['code']).quick_ratio(), same_line

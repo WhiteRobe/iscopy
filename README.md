@@ -22,7 +22,7 @@
 ## 快速上手 | Quick Start
 
 ```shell
-python anly.py --input ./demo --filename demo-data.py
+python anly.py --input ./demo --filename demo-data.py --template ./demo/template/demo-data.py
 ```
 
 ## 架构 | Struture
@@ -30,3 +30,10 @@ python anly.py --input ./demo --filename demo-data.py
 - `analyser`：主要的分析器
 - `extractor`：特征提取器
 - `purifier`：代码规格化
+
+## 检测效果 | Performance
+
+<p align="center">
+    <img src=".github/pic/summary.png" alt="summary.png"/>
+</p>
+

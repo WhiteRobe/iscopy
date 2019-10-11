@@ -17,11 +17,14 @@ class BasePurifier:
         if template is not None:
             template = self.prune(template)
             templates = template.split('\n')
-            for c in code.split('\n'):
+            codes = code.split('\n')
+            for c in codes:
                 if c in templates:
+                    # print('去除重复行前', len(code), c[0:10])
                     code = code.replace(c, '')
+                    # print('去除重复行后', len(code))
         # 去除空白行
-        code = re.sub(r'^\n+|\r+$', '', code)
+        code = re.sub(r'^\n+|\r+|\s+$', '', code, flags=re.M)
         return code
 
     def turn(self,  _str):
