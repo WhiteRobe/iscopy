@@ -1,6 +1,6 @@
 <h1 align="center"> IsCopy/你抄了吗 </h1>
 <p align="center">
-	<img src=".github/pic/logo.png" alt="logo"/><br/>
+	<img src="docs/pic/logo.png" alt="logo"/><br/>
     <img src="https://img.shields.io/badge/python-3.6-blue.svg" alt="python"/>
     <img src="https://img.shields.io/github/last-commit/WhiteRobe/iscopy.svg" alt="last-commit"/>
     <a href="https://github.com/WhiteRobe/iscopy/blob/master/LICENSE">
@@ -9,7 +9,7 @@
     <img src='https://bettercodehub.com/edge/badge/WhiteRobe/iscopy?branch=master'>
 </p>
 
-> 这是一个开发中的代码重复度检查框架。
+> 这是一个开发中的代码重复度检测框架。
 >
 > 目前版本仅实现了最基础的代码查重方式。
 
@@ -35,6 +35,6 @@ python anly.py --input ./demo --filename demo-data.py --template ./demo/template
 ## 检测效果 | Performance
 
 <p align="center">
-    <img src=".github/pic/summary.png" alt="summary.png"/>
+    <img src="docs/pic/summary.png" alt="summary.png"/>
 </p>
 
