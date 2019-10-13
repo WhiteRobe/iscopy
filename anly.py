@@ -4,6 +4,7 @@ def build_args():
     parser.add_argument('--input')
     parser.add_argument('--filename')
     parser.add_argument('--summary', default=False)
+    parser.add_argument('--same_line_rate', default=None)  # 相同行的判定比例
     parser.add_argument('--template', default=None)
     parser.add_argument('--output', default='./output')
     return parser.parse_args()

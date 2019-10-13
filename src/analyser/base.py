@@ -73,6 +73,7 @@ class BatchAnalyser(BaseAnalyser):
             self.result[opponent_name][opponent_key] = user_name
             self.result[opponent_name][value_key] = radio
 
+
 class DualAnalyser(BaseAnalyser):
     def __init__(self, args, file1, file2):
         super(DualAnalyser, self).__init__(args)
@@ -85,9 +86,22 @@ class DualAnalyser(BaseAnalyser):
 
     def analyse(self):
         from difflib import SequenceMatcher
-        op_codes = self.file2props['code'].split('\n')
-        same_line = 0
-        for c in self.file1props['code'].split('\n'):
-            if c in op_codes:
-                same_line += 1
+        same_line = self.count_same_line()
         return SequenceMatcher(None, self.file1props['code'], self.file2props['code']).quick_ratio(), same_line
+
+    def count_same_line(self):
+        from difflib import SequenceMatcher
+        same_line = 0
+        me_codes = self.file1props['code'].split('\n')
+        op_codes = self.file2props['code'].split('\n')
+        if self.args.same_line_rate is None:
+            for c in me_codes:
+                if c in op_codes:
+                    same_line += 1
+        else:
+            assert 0 < self.args.same_line_rate <1
+            for me_c in me_codes:
+                for op_c in op_codes:
+                    if SequenceMatcher(None, me_c, op_c).quick_ratio() > self.args.same_line_rate:
+                        same_line += 1
+        return same_line
