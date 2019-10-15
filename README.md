@@ -6,6 +6,7 @@
     <a href="https://github.com/WhiteRobe/iscopy/blob/master/LICENSE">
     	<img src="https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000" alt="LICENSE"/>
     </a>
+    <a href="https://zenodo.org/badge/latestdoi/214223313"><img src="https://zenodo.org/badge/214223313.svg" alt="DOI"></a>
     <img src='https://bettercodehub.com/edge/badge/WhiteRobe/iscopy?branch=master'>
 </p>
 
