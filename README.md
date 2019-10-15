@@ -27,7 +27,7 @@
 python anly.py --input ./demo --filename demo-data.py --template ./demo/template/demo-data.py
 ```
 
-## 架构 | Struture
+## 架构 | Structure
 
 - `analyser`：主要的分析器
 - `extractor`：特征提取器
